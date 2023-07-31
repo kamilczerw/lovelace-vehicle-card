@@ -1,0 +1,37 @@
+{
+  "name": "vehicle-cards",
+  "version": "1.0.0",
+  "description": "Home Assistant Vehicle Cards",
+  "main": "index.js",
+  "scripts": {
+    "start": "rollup -c --watch --bundleConfigAsCjs",
+    "build": "rollup -c --bundleConfigAsCjs"
+  },
+  "keywords": [
+    "home-assistant",
+    "lovelace",
+    "custom-card",
+    "vehicle-card",
+    "vehicle"
+  ],
+  "author": "Kamil Czerwiński",
+  "license": "ISC",
+  "dependencies": {
+    "@material/mwc-select": "^0.27.0",
+    "@material/mwc-textfield": "^0.27.0",
+    "lit": "^2.7.6"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.22.9",
+    "@rollup/plugin-babel": "^6.0.3",
+    "@rollup/plugin-commonjs": "^25.0.3",
+    "@rollup/plugin-json": "^6.0.0",
+    "@rollup/plugin-node-resolve": "^15.1.0",
+    "@rollup/plugin-terser": "^0.4.3",
+    "@rollup/plugin-typescript": "^11.1.2",
+    "eslint": "^8.46.0",
+    "rollup": "^3.27.0",
+    "rollup-plugin-serve": "^2.0.2",
+    "typescript": "^5.1.6"
+  }
+}
