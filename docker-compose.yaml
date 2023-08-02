@@ -1,0 +1,14 @@
+services:
+  ha:
+    image: homeassistant/home-assistant:beta
+    ports:
+      - "8123:8123"
+    volumes:
+      - .hass_dev:/config
+  assets:
+    image: busybox
+    ports:
+      - "4005:4005"
+    volumes:
+      - ./assets:/assets
+    command: "busybox httpd -f -p 4005 -h /assets"

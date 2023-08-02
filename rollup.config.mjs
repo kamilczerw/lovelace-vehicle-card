@@ -5,9 +5,17 @@ import nodeResolve from "@rollup/plugin-node-resolve";
 import terser from "@rollup/plugin-terser";
 import typescript from "@rollup/plugin-typescript";
 import serve from "rollup-plugin-serve";
+import replace from "@rollup/plugin-replace";
 
 
 const dev = process.env.ROLLUP_WATCH;
+
+const replaceOptions = dev ? {
+    "process.env.ASSET_URL": JSON.stringify(process.env.ASSET_URL ? process.env.ASSET_URL : "http://localhost:4005/"),
+} : {
+    "process.env.ASSET_URL": JSON.stringify("https://raw.githubusercontent.com/kamilczerw/lovelace-vehicle-card/main/assets/"),
+
+};
 
 const serveOptions = {
     contentBase: ["./dist"],
@@ -29,6 +37,7 @@ const plugins = [
     babel({
         babelHelpers: "bundled",
     }),
+    replace(replaceOptions),
     ...(dev ? [serve(serveOptions)] : [terser()]),
 ];
 

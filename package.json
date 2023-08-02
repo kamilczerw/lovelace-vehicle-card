@@ -4,7 +4,7 @@
   "description": "Home Assistant Vehicle Cards",
   "main": "index.js",
   "scripts": {
-    "start": "rollup -c --watch --bundleConfigAsCjs",
+    "start": "docker-compose up -d && ASSET_URL=http://localhost:4005/ rollup -c --watch --bundleConfigAsCjs",
     "build": "rollup -c --bundleConfigAsCjs"
   },
   "keywords": [
@@ -19,7 +19,9 @@
   "dependencies": {
     "@material/mwc-select": "^0.27.0",
     "@material/mwc-textfield": "^0.27.0",
-    "lit": "^2.7.6"
+    "custom-card-helpers": "^1.9.0",
+    "lit": "^2.7.6",
+    "superstruct": "^1.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.22.9",
@@ -27,8 +29,10 @@
     "@rollup/plugin-commonjs": "^25.0.3",
     "@rollup/plugin-json": "^6.0.0",
     "@rollup/plugin-node-resolve": "^15.1.0",
+    "@rollup/plugin-replace": "^5.0.2",
     "@rollup/plugin-terser": "^0.4.3",
     "@rollup/plugin-typescript": "^11.1.2",
+    "@types/node": "^20.4.5",
     "eslint": "^8.46.0",
     "rollup": "^3.27.0",
     "rollup-plugin-serve": "^2.0.2",
