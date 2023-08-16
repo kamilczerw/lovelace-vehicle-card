@@ -2,6 +2,12 @@ default_config:
 
 homeassistant:
   packages: !include_dir_named packages/
+  
+  auth_providers:
+    - type: trusted_networks
+      trusted_networks:
+        - 0.0.0.0/0
+      allow_bypass_login: true
 
 tts:
   - platform: google_translate

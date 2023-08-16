@@ -4,7 +4,8 @@
   "description": "Home Assistant Vehicle Cards",
   "main": "index.js",
   "scripts": {
-    "start": "docker-compose up -d && ASSET_URL=http://localhost:4005/ rollup -c --watch --bundleConfigAsCjs",
+    "start": "rollup -c --watch --bundleConfigAsCjs",
+    "start:docker": "docker-compose up -d && ASSET_URL=http://localhost:4005/ rollup -c --watch --bundleConfigAsCjs",
     "build": "rollup -c --bundleConfigAsCjs"
   },
   "keywords": [

@@ -3,13 +3,11 @@ import { LitElement, html, nothing } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { VehicleCardConfig } from "./vehicle-card-config";
 import { BaseElement } from "../base-element";
+import { HaFormSchema } from "../../utils/form/ha-form";
+import "../../utils/form/custom/ha-form-list"
+// import { HaFormSchema } from "../../utils/form";
 
 export const VEHICLE_CARD_EDITOR_NAME = "vehicle-card-editor";
-
-type HaFormSchema = {
-  name: string,
-  selector?: { [key: string]: any },
-};
 
 type DeviceEntry = {
   id: string,
@@ -30,61 +28,91 @@ type DeviceEntry = {
 }
 
 
-const schema = [
-  { name: "model", selector: { device: {} } },
+const schema: HaFormSchema[] = [
+  {
+    name: "preset",
+    required: false,
+    selector: {
+      select: { mode: "dropdown", options: ['Skoda Enyaq'], }
+    }
+  },
+  { 
+    name: "static_elements",
+    selector: {
+      vehicle_elements: []
+    } 
+  },
+
+  {
+    type: "list-element",
+    name: "lets-see",
+    schema: [
+      { name: "sensor", selector: { entity: { domain: "binary_sensor" } }},
+      { name: "image_on", selector: { text: { } }}
+      { name: "image_off", selector: { text: { } }}
+    ]
+  },
+  // {
+  //   type: "grid",
+  //   name: "",
+  //   schema: [
+  //     { name: "hmm", selector: { select: { mode: "dropdown", options: ['Skoda Enyaq'], } }},
+  //     { name: "hmm1", selector: { select: { mode: "dropdown", options: ['Skoda Enyaq'], } }}
+  //   ]
+  // }
 ]
 
-const staticLabels: {[ key: string]: {label: string}} = {
-  "model": { label: "Model" },
+const staticLabels: { [key: string]: { label: string } } = {
+  "preset": { label: "Preset" },
   "device": { label: "Device" },
+  "hmm": { label: "Hmm" },
 };
 
 @customElement(VEHICLE_CARD_EDITOR_NAME)
 export class VehicleCardEditor extends BaseElement implements LovelaceCardEditor {
-    @state() private _config?: VehicleCardConfig;
-    
-    public setConfig(config: VehicleCardConfig): void {
-        this._config = { ...config };
+  @state() private _config?: VehicleCardConfig;
+
+  public setConfig(config: VehicleCardConfig): void {
+    this._config = { ...config };
+  }
+
+  public static getStubConfig() {
+    return {};
+  }
+
+  public getCardSize() {
+    return 1;
+  }
+
+  protected async updated(changedProperties: Map<string, any>) {
+    console.log(changedProperties);
+    if (!this.hass || !this._config) {
+      return;
     }
 
-    public static getStubConfig() {
-        return {};
-    }
-    
-    public getCardSize() {
-        return 1;
-    }
+    // console.log(changedProperties);
 
-    protected async updated(changedProperties: Map<string, any>) {
-      if (!this.hass || !this._config) {
-        return;
-      }
-
-      console.log(changedProperties);
-
-      let devices = await this.hass.callWS<DeviceEntry[]>({
-        type: "config/device_registry/list",
-      }).then((devices: DeviceEntry[]) => {
-        return devices.filter((device: DeviceEntry) => {
-          return device.id === this._config?.device;
-        });
+    let devices = await this.hass.callWS<DeviceEntry[]>({
+      type: "config/device_registry/list",
+    }).then((devices: DeviceEntry[]) => {
+      return devices.filter((device: DeviceEntry) => {
+        return device.id === this._config?.device;
       });
+    });
 
+    // console.log(devices);
 
+  }
 
-      console.log(devices);
-
+  protected render() {
+    if (!this.hass || !this._config) {
+      return nothing;
     }
-    
-    protected render() {
-      if (!this.hass || !this._config) {
-          return nothing;
-      }
-      // const dr: DeviceRegistry = 
+    // const dr: DeviceRegistry = 
 
-      // const schema = computeSchema(this.hass!.localize);
+    // const schema = computeSchema(this.hass!.localize);
 
-      return html`
+    return html`
           <ha-form
               .hass=${this.hass}
               .data=${this._config}
@@ -96,7 +124,11 @@ export class VehicleCardEditor extends BaseElement implements LovelaceCardEditor
   }
 
   private _computeLabel = (schema: HaFormSchema) => {
-    return staticLabels[schema.name].label;
+    if (schema.name in staticLabels) {
+      return staticLabels[schema.name].label;
+    } else {
+      return schema.name
+    }
   }
 
   private _valueChanged(ev: CustomEvent): void {
